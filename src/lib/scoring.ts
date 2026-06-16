@@ -1,4 +1,5 @@
-import { resultsByMatchId } from "@/lib/results";
+import type { MatchResult } from "@/lib/matches";
+import { resultsByMatchId as fallbackResultsByMatchId } from "@/lib/results";
 
 export type ScoreablePrediction = {
   matchId: string;
@@ -6,7 +7,10 @@ export type ScoreablePrediction = {
   awayScore: number;
 };
 
-export function scorePrediction(prediction: ScoreablePrediction) {
+export function scorePrediction(
+  prediction: ScoreablePrediction,
+  resultsByMatchId: Map<string, MatchResult> = fallbackResultsByMatchId,
+) {
   const result = resultsByMatchId.get(prediction.matchId);
 
   if (!result) {
@@ -19,9 +23,12 @@ export function scorePrediction(prediction: ScoreablePrediction) {
     : 0;
 }
 
-export function scorePredictions(predictions: ScoreablePrediction[]) {
+export function scorePredictions(
+  predictions: ScoreablePrediction[],
+  resultsByMatchId: Map<string, MatchResult> = fallbackResultsByMatchId,
+) {
   return predictions.reduce(
-    (total, prediction) => total + scorePrediction(prediction),
+    (total, prediction) => total + scorePrediction(prediction, resultsByMatchId),
     0,
   );
 }

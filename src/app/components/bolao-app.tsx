@@ -11,12 +11,6 @@ const totalMatches = matchesByGroup.reduce(
   0,
 );
 
-const completedResultsCount = matchesByGroup.reduce(
-  (total, group) =>
-    total + group.matches.filter((match) => Boolean(match.result)).length,
-  0,
-);
-
 type User = {
   id: string;
   name: string;
@@ -47,6 +41,13 @@ type DraftScore = {
 };
 
 type DraftScores = Record<string, DraftScore>;
+
+type MatchResult = {
+  homeScore: number;
+  awayScore: number;
+};
+
+type OfficialResults = Record<string, MatchResult>;
 
 type SavePayloadPrediction = {
   matchId: string;
@@ -151,6 +152,20 @@ function buildUserUrl(userId: string) {
   return `/?userId=${encodeURIComponent(userId)}`;
 }
 
+function createInitialOfficialResults() {
+  const results: OfficialResults = {};
+
+  for (const group of matchesByGroup) {
+    for (const match of group.matches) {
+      if (match.result) {
+        results[match.id] = match.result;
+      }
+    }
+  }
+
+  return results;
+}
+
 export function BolaoApp() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -165,6 +180,9 @@ export function BolaoApp() {
   const [isSaving, setIsSaving] = useState(false);
   const [isUpdatingResults, setIsUpdatingResults] = useState(false);
   const [selectedGroup, setSelectedGroup] = useState<GroupFilter>("A");
+  const [officialResults, setOfficialResults] = useState<OfficialResults>(() =>
+    createInitialOfficialResults(),
+  );
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
 
@@ -190,6 +208,7 @@ export function BolaoApp() {
   );
 
   const hasReachedParticipantsLimit = users.length >= MAX_PARTICIPANTS;
+  const completedResultsCount = Object.keys(officialResults).length;
 
   const displayedGroups = useMemo(
     () =>
@@ -230,13 +249,26 @@ export function BolaoApp() {
     setLeaderboard(data.leaderboard);
   }, []);
 
+  const refreshOfficialResults = useCallback(async () => {
+    const data = await fetchJson<{
+      matchesCount: number;
+      results: OfficialResults;
+    }>("/api/results", { method: "POST" });
+    setOfficialResults(data.results);
+    return data.matchesCount;
+  }, []);
+
   useEffect(() => {
     let isMounted = true;
 
     async function boot() {
       try {
         setError("");
-        await Promise.all([refreshUsers(), refreshLeaderboard()]);
+        await Promise.all([
+          refreshUsers(),
+          refreshLeaderboard(),
+          refreshOfficialResults(),
+        ]);
       } catch (caughtError) {
         if (isMounted) {
           setError(
@@ -257,7 +289,7 @@ export function BolaoApp() {
     return () => {
       isMounted = false;
     };
-  }, [refreshLeaderboard, refreshUsers]);
+  }, [refreshLeaderboard, refreshOfficialResults, refreshUsers]);
 
   useEffect(() => {
     if (users.length === 0) {
@@ -407,32 +439,12 @@ export function BolaoApp() {
       setIsUpdatingResults(true);
       setError("");
       setNotice("");
-      const response = await fetch("/api/results", {
-        method: "POST",
-      });
-
-      if (!response.ok) {
-        let message = "Não foi possível atualizar os resultados oficiais.";
-
-        try {
-          const data = (await response.json()) as { error?: string };
-          message = data.error ?? message;
-        } catch {
-          message = response.statusText || message;
-        }
-
-        throw new Error(message);
-      }
-
-      const data = (await response.json()) as { matchesCount: number };
+      const matchesCount = await refreshOfficialResults();
+      await refreshLeaderboard();
 
       setNotice(
-        `${data.matchesCount} resultados oficiais foram atualizados. Recarregando a página...`,
+        `${matchesCount} resultados oficiais foram atualizados.`,
       );
-
-      window.setTimeout(() => {
-        window.location.reload();
-      }, 700);
     } catch (caughtError) {
       setError(
         caughtError instanceof Error
@@ -687,6 +699,11 @@ export function BolaoApp() {
                         </div>
 
                         <div className="min-w-0">
+                          {(() => {
+                            const result = officialResults[match.id];
+
+                            return (
+                              <>
                           <div className="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-2 sm:gap-3">
                             <p className="min-w-0 break-words text-center font-bold text-slate-100 md:truncate md:text-right">
                               {match.homeTeam}
@@ -699,16 +716,18 @@ export function BolaoApp() {
                             </p>
                           </div>
 
-                          {match.result ? (
+                          {result ? (
                             <p className="mt-2 text-center text-xs font-bold text-emerald-300">
-                              Resultado: {match.result.homeScore} x{" "}
-                              {match.result.awayScore}
+                              Resultado: {result.homeScore} x {result.awayScore}
                             </p>
                           ) : (
                             <p className="mt-2 text-center text-xs font-medium text-slate-500">
                               Aguardando resultado
                             </p>
                           )}
+                              </>
+                            );
+                          })()}
                         </div>
 
                         <div className="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-2">

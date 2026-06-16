@@ -157,7 +157,7 @@ function getMatchId(match: OpenfootballMatch) {
   return `${date}-${normalizeText(homeTeam)}-${normalizeText(awayTeam)}`;
 }
 
-export function parseOpenfootballResults(data: unknown) {
+export function parseResultsData(data: unknown) {
   const results = new Map<string, MatchResult>();
 
   if (!data || typeof data !== "object") {
@@ -179,4 +179,4 @@ export function parseOpenfootballResults(data: unknown) {
   return results;
 }
 
-export const resultsByMatchId = parseOpenfootballResults(fifaResults);
+export const resultsByMatchId = parseResultsData(fifaResults);

@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "db:push": "prisma db push",
     "update:results": "node scripts/update-results-from-fifa.mjs",
     "postinstall": "prisma generate"
   },

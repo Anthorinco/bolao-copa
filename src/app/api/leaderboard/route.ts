@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { fetchFifaResults } from "@/lib/fifa-results";
 import { scorePredictions } from "@/lib/scoring";
 import { prisma } from "@/lib/prisma";
 
@@ -6,6 +7,8 @@ export const dynamic = "force-dynamic";
 
 export async function GET() {
   try {
+    const fifaResults = await fetchFifaResults().catch(() => null);
+    const resultsByMatchId = fifaResults?.resultsByMatchId;
     const users = await prisma.user.findMany({
       orderBy: { name: "asc" },
       include: {
@@ -21,7 +24,7 @@ export async function GET() {
 
     const leaderboard = users
       .map((user) => {
-        const score = scorePredictions(user.predictions);
+        const score = scorePredictions(user.predictions, resultsByMatchId);
 
         return {
           userId: user.id,
