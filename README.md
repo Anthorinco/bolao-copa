@@ -54,7 +54,6 @@ Postgres do Neon, Supabase ou outro banco compatível:
 
 ```bash
 DATABASE_URL="postgresql://USER:PASSWORD@HOST/DATABASE?sslmode=require"
-RESULTS_UPDATE_TOKEN="uma-senha-para-atualizar-resultados"
 ```
 
 3. Crie as tabelas no banco:

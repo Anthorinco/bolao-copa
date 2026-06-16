@@ -95,27 +95,7 @@ function toResult(match: FifaMatch) {
   };
 }
 
-export async function POST(request: Request) {
-  const adminToken = process.env.RESULTS_UPDATE_TOKEN;
-  const incomingToken = request.headers.get("x-admin-token");
-
-  if (process.env.NODE_ENV === "production" && !adminToken) {
-    return NextResponse.json(
-      {
-        error:
-          "Atualização de resultados desativada. Configure RESULTS_UPDATE_TOKEN no servidor.",
-      },
-      { status: 403 },
-    );
-  }
-
-  if (adminToken && incomingToken !== adminToken) {
-    return NextResponse.json(
-      { error: "Senha de atualização inválida." },
-      { status: 401 },
-    );
-  }
-
+export async function POST() {
   try {
     const response = await fetch(FIFA_RESULTS_URL, { cache: "no-store" });
 

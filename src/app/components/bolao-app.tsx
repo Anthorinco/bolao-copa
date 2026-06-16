@@ -407,28 +407,9 @@ export function BolaoApp() {
       setIsUpdatingResults(true);
       setError("");
       setNotice("");
-      const savedToken =
-        typeof window === "undefined"
-          ? ""
-          : window.sessionStorage.getItem("resultsUpdateToken") ?? "";
-      let response = await fetch("/api/results", {
+      const response = await fetch("/api/results", {
         method: "POST",
-        headers: savedToken ? { "x-admin-token": savedToken } : undefined,
       });
-
-      if (response.status === 401 && typeof window !== "undefined") {
-        const token = window.prompt("Digite a senha para atualizar resultados:");
-
-        if (!token) {
-          throw new Error("Atualização cancelada.");
-        }
-
-        window.sessionStorage.setItem("resultsUpdateToken", token);
-        response = await fetch("/api/results", {
-          method: "POST",
-          headers: { "x-admin-token": token },
-        });
-      }
 
       if (!response.ok) {
         let message = "Não foi possível atualizar os resultados oficiais.";
