@@ -1,0 +1,132 @@
+{
+  "name": "Resultados da Copa do Mundo FIFA 2026",
+  "source": "https://api.fifa.com/api/v3/calendar/matches?language=en&count=120&idCompetition=17&idSeason=285023&from=2026-06-11&to=2026-07-19",
+  "updatedAt": "2026-06-16T02:26:23.924Z",
+  "rounds": [
+    {
+      "name": "Fase de grupos",
+      "matches": [
+        {
+          "date": "2026-06-11",
+          "team1": "México",
+          "team2": "África do Sul",
+          "score1": 2,
+          "score2": 0,
+          "fifaMatchId": "400021443"
+        },
+        {
+          "date": "2026-06-11",
+          "team1": "Coreia do Sul",
+          "team2": "Tchéquia",
+          "score1": 2,
+          "score2": 1,
+          "fifaMatchId": "400021441"
+        },
+        {
+          "date": "2026-06-12",
+          "team1": "Canadá",
+          "team2": "Bósnia e Herzegovina",
+          "score1": 1,
+          "score2": 1,
+          "fifaMatchId": "400021449"
+        },
+        {
+          "date": "2026-06-12",
+          "team1": "Estados Unidos",
+          "team2": "Paraguai",
+          "score1": 4,
+          "score2": 1,
+          "fifaMatchId": "400021458"
+        },
+        {
+          "date": "2026-06-13",
+          "team1": "Catar",
+          "team2": "Suíça",
+          "score1": 1,
+          "score2": 1,
+          "fifaMatchId": "400021447"
+        },
+        {
+          "date": "2026-06-13",
+          "team1": "Brasil",
+          "team2": "Marrocos",
+          "score1": 1,
+          "score2": 1,
+          "fifaMatchId": "400021456"
+        },
+        {
+          "date": "2026-06-13",
+          "team1": "Haiti",
+          "team2": "Escócia",
+          "score1": 0,
+          "score2": 1,
+          "fifaMatchId": "400021453"
+        },
+        {
+          "date": "2026-06-13",
+          "team1": "Austrália",
+          "team2": "Turquia",
+          "score1": 2,
+          "score2": 0,
+          "fifaMatchId": "400021463"
+        },
+        {
+          "date": "2026-06-14",
+          "team1": "Alemanha",
+          "team2": "Curaçao",
+          "score1": 7,
+          "score2": 1,
+          "fifaMatchId": "400021464"
+        },
+        {
+          "date": "2026-06-14",
+          "team1": "Países Baixos",
+          "team2": "Japão",
+          "score1": 2,
+          "score2": 2,
+          "fifaMatchId": "400021470"
+        },
+        {
+          "date": "2026-06-14",
+          "team1": "Costa do Marfim",
+          "team2": "Equador",
+          "score1": 1,
+          "score2": 0,
+          "fifaMatchId": "400021467"
+        },
+        {
+          "date": "2026-06-14",
+          "team1": "Suécia",
+          "team2": "Tunísia",
+          "score1": 5,
+          "score2": 1,
+          "fifaMatchId": "400021474"
+        },
+        {
+          "date": "2026-06-15",
+          "team1": "Espanha",
+          "team2": "Cabo Verde",
+          "score1": 0,
+          "score2": 0,
+          "fifaMatchId": "400021482"
+        },
+        {
+          "date": "2026-06-15",
+          "team1": "Bélgica",
+          "team2": "Egito",
+          "score1": 1,
+          "score2": 1,
+          "fifaMatchId": "400021478"
+        },
+        {
+          "date": "2026-06-15",
+          "team1": "Arábia Saudita",
+          "team2": "Uruguai",
+          "score1": 1,
+          "score2": 1,
+          "fifaMatchId": "400021486"
+        }
+      ]
+    }
+  ]
+}
