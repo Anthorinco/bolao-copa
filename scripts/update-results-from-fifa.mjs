@@ -4,7 +4,11 @@ const endpoint =
   "https://api.fifa.com/api/v3/calendar/matches?language=en&count=120&idCompetition=17&idSeason=285023&from=2026-06-11&to=2026-07-19";
 
 function getTeamName(team) {
-  return team?.TeamName?.find((name) => name.Locale === "en-GB")?.Description ?? team?.ShortClubName ?? "";
+  return (
+    team?.TeamName?.find((name) => name.Locale === "en-GB")?.Description ??
+    team?.ShortClubName ??
+    ""
+  );
 }
 
 function translateTeamName(teamName) {
@@ -75,7 +79,9 @@ function toResult(match) {
 const response = await fetch(endpoint);
 
 if (!response.ok) {
-  throw new Error(`FIFA API returned ${response.status} ${response.statusText}`);
+  throw new Error(
+    `FIFA API returned ${response.status} ${response.statusText}`,
+  );
 }
 
 const data = await response.json();

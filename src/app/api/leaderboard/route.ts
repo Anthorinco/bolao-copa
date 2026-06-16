@@ -3,12 +3,18 @@ import { fetchFifaResults } from "@/lib/fifa-results";
 import { scorePredictions } from "@/lib/scoring";
 import { prisma } from "@/lib/prisma";
 
+export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function GET() {
   try {
-    const fifaResults = await fetchFifaResults().catch(() => null);
+    const fifaResults = await fetchFifaResults().catch((error) => {
+      console.error("[leaderboard] Falha ao buscar resultados da FIFA:", error);
+      return null;
+    });
+
     const resultsByMatchId = fifaResults?.resultsByMatchId;
+
     const users = await prisma.user.findMany({
       orderBy: { name: "asc" },
       include: {
@@ -24,7 +30,9 @@ export async function GET() {
 
     const leaderboard = users
       .map((user) => {
-        const score = scorePredictions(user.predictions, resultsByMatchId);
+        const score = resultsByMatchId
+          ? scorePredictions(user.predictions, resultsByMatchId)
+          : scorePredictions(user.predictions);
 
         return {
           userId: user.id,
@@ -47,7 +55,9 @@ export async function GET() {
       });
 
     return NextResponse.json({ leaderboard });
-  } catch {
+  } catch (error) {
+    console.error("[leaderboard] Erro ao carregar ranking:", error);
+
     return NextResponse.json(
       { error: "Não foi possível carregar o ranking." },
       { status: 500 },

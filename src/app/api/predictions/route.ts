@@ -140,7 +140,9 @@ export async function PUT(request: Request) {
         await tx.prediction.deleteMany({
           where: {
             userId,
-            matchId: { notIn: predictions.map((prediction) => prediction.matchId) },
+            matchId: {
+              notIn: predictions.map((prediction) => prediction.matchId),
+            },
           },
         });
 

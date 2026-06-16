@@ -191,7 +191,9 @@ export function BolaoApp() {
       return "";
     }
 
-    return users.some((user) => user.id === urlUserId) ? urlUserId : users[0].id;
+    return users.some((user) => user.id === urlUserId)
+      ? urlUserId
+      : users[0].id;
   }, [urlUserId, users]);
 
   const selectedUser = useMemo(
@@ -439,12 +441,24 @@ export function BolaoApp() {
       setIsUpdatingResults(true);
       setError("");
       setNotice("");
-      const matchesCount = await refreshOfficialResults();
-      await refreshLeaderboard();
 
-      setNotice(
-        `${matchesCount} resultados oficiais foram atualizados.`,
-      );
+      const matchesCount = await refreshOfficialResults();
+
+      try {
+        await refreshLeaderboard();
+
+        setNotice(`${matchesCount} resultados oficiais foram atualizados.`);
+      } catch (caughtError) {
+        setNotice(
+          `${matchesCount} resultados oficiais foram atualizados, mas o ranking não pôde ser recalculado agora.`,
+        );
+
+        setError(
+          caughtError instanceof Error
+            ? caughtError.message
+            : "Não foi possível carregar o ranking.",
+        );
+      }
     } catch (caughtError) {
       setError(
         caughtError instanceof Error
@@ -539,9 +553,7 @@ export function BolaoApp() {
           </form>
 
           <label>
-            <span className="label mb-1 block">
-              Participante ativo
-            </span>
+            <span className="label mb-1 block">Participante ativo</span>
             <select
               value={selectedUserId}
               onChange={(event) => handleSelectedUserChange(event.target.value)}
@@ -581,16 +593,19 @@ export function BolaoApp() {
             </span>
           </div>
           <div className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1">
-            {[{ group: "all" as const, label: "Todos" }, ...matchesByGroup.map((group) => ({
-              group: group.group,
-              label: group.group,
-            }))].map((item) => {
+            {[
+              { group: "all" as const, label: "Todos" },
+              ...matchesByGroup.map((group) => ({
+                group: group.group,
+                label: group.group,
+              })),
+            ].map((item) => {
               const isSelected = selectedGroup === item.group;
               const total =
                 item.group === "all"
                   ? totalMatches
-                  : matchesByGroup.find((group) => group.group === item.group)
-                      ?.matches.length ?? 0;
+                  : (matchesByGroup.find((group) => group.group === item.group)
+                      ?.matches.length ?? 0);
               const completed = groupProgress.get(item.group) ?? 0;
 
               return (
@@ -704,27 +719,28 @@ export function BolaoApp() {
 
                             return (
                               <>
-                          <div className="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-2 sm:gap-3">
-                            <p className="min-w-0 break-words text-center font-bold text-slate-100 md:truncate md:text-right">
-                              {match.homeTeam}
-                            </p>
-                            <span className="text-sm font-bold text-slate-500">
-                              x
-                            </span>
-                            <p className="min-w-0 break-words text-center font-bold text-slate-100 md:truncate md:text-left">
-                              {match.awayTeam}
-                            </p>
-                          </div>
+                                <div className="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-2 sm:gap-3">
+                                  <p className="min-w-0 break-words text-center font-bold text-slate-100 md:truncate md:text-right">
+                                    {match.homeTeam}
+                                  </p>
+                                  <span className="text-sm font-bold text-slate-500">
+                                    x
+                                  </span>
+                                  <p className="min-w-0 break-words text-center font-bold text-slate-100 md:truncate md:text-left">
+                                    {match.awayTeam}
+                                  </p>
+                                </div>
 
-                          {result ? (
-                            <p className="mt-2 text-center text-xs font-bold text-emerald-300">
-                              Resultado: {result.homeScore} x {result.awayScore}
-                            </p>
-                          ) : (
-                            <p className="mt-2 text-center text-xs font-medium text-slate-500">
-                              Aguardando resultado
-                            </p>
-                          )}
+                                {result ? (
+                                  <p className="mt-2 text-center text-xs font-bold text-emerald-300">
+                                    Resultado: {result.homeScore} x{" "}
+                                    {result.awayScore}
+                                  </p>
+                                ) : (
+                                  <p className="mt-2 text-center text-xs font-medium text-slate-500">
+                                    Aguardando resultado
+                                  </p>
+                                )}
                               </>
                             );
                           })()}

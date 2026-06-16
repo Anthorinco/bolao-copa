@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { fetchFifaResults } from "@/lib/fifa-results";
 
+export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function POST() {
@@ -12,7 +13,9 @@ export async function POST() {
       results: data.results,
       updatedAt: data.updatedAt,
     });
-  } catch {
+  } catch (error) {
+    console.error("[results] Erro ao atualizar resultados oficiais:", error);
+
     return NextResponse.json(
       { error: "Não foi possível atualizar os resultados oficiais." },
       { status: 500 },

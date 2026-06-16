@@ -50,7 +50,9 @@ export async function POST(request: Request) {
 
     if (usersCount >= MAX_PARTICIPANTS) {
       return NextResponse.json(
-        { error: `O bolão aceita no máximo ${MAX_PARTICIPANTS} participantes.` },
+        {
+          error: `O bolão aceita no máximo ${MAX_PARTICIPANTS} participantes.`,
+        },
         { status: 409 },
       );
     }
