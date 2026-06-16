@@ -49,10 +49,11 @@ identificador usado é
 npm install
 ```
 
-2. Crie `.env` a partir de `.env.example`. Para rodar localmente, use SQLite:
+2. Crie `.env` a partir de `.env.example` e preencha `DATABASE_URL` com a URL
+Postgres do Neon, Supabase ou outro banco compatível:
 
 ```bash
-DATABASE_URL="file:./dev.db"
+DATABASE_URL="postgresql://USER:PASSWORD@HOST/DATABASE?sslmode=require"
 RESULTS_UPDATE_TOKEN="uma-senha-para-atualizar-resultados"
 ```
 
