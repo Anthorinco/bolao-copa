@@ -134,40 +134,19 @@ export async function PUT(request: Request) {
     }
 
     const savedPredictions = await prisma.$transaction(async (tx) => {
-      if (predictions.length === 0) {
-        await tx.prediction.deleteMany({ where: { userId } });
-      } else {
-        await tx.prediction.deleteMany({
-          where: {
-            userId,
-            matchId: {
-              notIn: predictions.map((prediction) => prediction.matchId),
-            },
-          },
-        });
+      await tx.prediction.deleteMany({
+        where: { userId },
+      });
 
-        await Promise.all(
-          predictions.map((prediction) =>
-            tx.prediction.upsert({
-              where: {
-                userId_matchId: {
-                  userId,
-                  matchId: prediction.matchId,
-                },
-              },
-              update: {
-                homeScore: prediction.homeScore,
-                awayScore: prediction.awayScore,
-              },
-              create: {
-                userId,
-                matchId: prediction.matchId,
-                homeScore: prediction.homeScore,
-                awayScore: prediction.awayScore,
-              },
-            }),
-          ),
-        );
+      if (predictions.length > 0) {
+        await tx.prediction.createMany({
+          data: predictions.map((prediction) => ({
+            userId,
+            matchId: prediction.matchId,
+            homeScore: prediction.homeScore,
+            awayScore: prediction.awayScore,
+          })),
+        });
       }
 
       return tx.prediction.findMany({
@@ -186,10 +165,12 @@ export async function PUT(request: Request) {
     });
 
     return NextResponse.json({ predictions: savedPredictions });
-  } catch {
-    return NextResponse.json(
-      { error: "Não foi possível salvar os palpites." },
-      { status: 500 },
-    );
-  }
+  } catch (error) {
+  console.error("[predictions] Erro ao salvar palpites:", error);
+
+  return NextResponse.json(
+    { error: "Não foi possível salvar os palpites." },
+    { status: 500 },
+  );
+}
 }
