@@ -737,7 +737,7 @@ export const matches: WorldCupMatch[] = [
     matchday: 7,
     dateLabel: "Quarta, 17 de junho",
     timeLabel: "19:00 UTC-4",
-    homeTeam: "Ghana",
+    homeTeam: "Gana",
     awayTeam: "Panamá",
     venue: "Toronto",
   },
@@ -748,7 +748,7 @@ export const matches: WorldCupMatch[] = [
     dateLabel: "Terça, 23 de junho",
     timeLabel: "16:00 UTC-4",
     homeTeam: "Inglaterra",
-    awayTeam: "Ghana",
+    awayTeam: "Gana",
     venue: "Boston (Foxborough)",
   },
   {
@@ -778,7 +778,7 @@ export const matches: WorldCupMatch[] = [
     dateLabel: "Sábado, 27 de junho",
     timeLabel: "17:00 UTC-4",
     homeTeam: "Croácia",
-    awayTeam: "Ghana",
+    awayTeam: "Gana",
     venue: "Filadélfia",
   },
 ];

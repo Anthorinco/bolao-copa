@@ -71,6 +71,7 @@ function normalizeText(value: string) {
     espanha: "spain",
     "estados-unidos": "usa",
     franca: "france",
+    gana: "ghana",
     inglaterra: "england",
     "ir-iran": "iran",
     ira: "iran",
